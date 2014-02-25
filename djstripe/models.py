@@ -29,7 +29,6 @@ from .signals import webhook_processing_error
 from .settings import TRIAL_PERIOD_FOR_USER_CALLBACK
 from .settings import DEFAULT_PLAN
 
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
 stripe.api_version = getattr(settings, "STRIPE_API_VERSION", "2012-11-07")
 
@@ -534,12 +533,13 @@ class Customer(StripeObject):
         for the key trial_period_days.
         """
         if ("trial_period_days" in PAYMENTS_PLANS[plan]):
-            trial_days=PAYMENTS_PLANS[plan]["trial_period_days"]
+            trial_days = PAYMENTS_PLANS[plan]["trial_period_days"]
         """
         The subscription is defined with prorate=False to make the subscription
         end behavior of Change plan consistent with the one of Cancel subscription (which is
         defined with at_period_end=True).
         """
+
         if trial_days:
             resp = cu.update_subscription(
                 plan=PAYMENTS_PLANS[plan]["stripe_plan_id"],
