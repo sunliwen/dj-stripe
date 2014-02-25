@@ -15,11 +15,11 @@
         <div class="col-xs-12">
                 <a class="btn btn-info" data-toggle="modal" href="#show-card">Show Credit Card</a>
                 <a class="btn btn-primary" href="{% url 'djstripe:change_card' %}">Change Card</a>
+                <a class="btn btn-primary" href="/accounts/logout/">Logout</a>
+
 
             {% if subscription.is_status_current and not subscription.is_status_temporarily_current %}
                 <a class="btn btn-danger" href="{% url 'djstripe:cancel_subscription' %}">Cancel Donation</a>
-            {% else %}
-            	<a class="btn btn-success" href="{% url 'djstripe:subscribe' %}">Donate</a>
             {% endif %}
         </div>
     </div>

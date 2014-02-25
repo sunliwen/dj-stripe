@@ -41,7 +41,7 @@ urlpatterns = patterns("",
         name="change_plan"
     ),
     url(
-        r"^change/cards/$",
+        r"^card/$",
         views.ChangeCardView.as_view(),
         name="change_card"
     ),
