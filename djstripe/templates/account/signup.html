@@ -36,6 +36,16 @@
   jQuery(function($) {
     Stripe.setPublishableKey('{{ STRIPE_PUBLIC_KEY }}');
 
+    $('#id_plan').on('change', function(event) {
+        console.log("id plan change");
+
+        if($("#id_plan").val().indexOf('custom') !== -1) {
+            $("#div_id_quantity").show();
+        } else {
+            $("#div_id_quantity").hide();
+        }
+    });
+
     
     $('#signup_form').submit(function(event) {
         var $form = $(this);
