@@ -17,6 +17,7 @@ Call from url tag::
 
 from __future__ import unicode_literals
 from django.conf.urls import patterns, url
+from django.views.generic import TemplateView
 
 from . import settings as app_settings
 from . import views
@@ -31,6 +32,16 @@ urlpatterns = patterns("",
         name="account"
     ),
     url(
+        r"^$",
+        TemplateView.as_view(template_name="thankyou.html"),
+        name="thank_you"
+    ),
+    url(
+        r"^onetime/$",
+        views.DonateOneTimeView.as_view(),
+        name="donate_onetime"
+    ),
+    url(
         r"^subscribe/$",
         views.SubscribeFormView.as_view(),
         name="subscribe"
@@ -41,7 +52,7 @@ urlpatterns = patterns("",
         name="change_plan"
     ),
     url(
-        r"^card/$",
+        r"^change/card/$",
         views.ChangeCardView.as_view(),
         name="change_card"
     ),

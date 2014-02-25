@@ -12,6 +12,11 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 stripe.api_version = getattr(settings, "STRIPE_API_VERSION", "2012-11-07")
 
 
+class OneTimeForm(forms.Form):
+
+    amount = forms.CharField(max_length=10, required=True)
+
+
 class PlanForm(forms.Form):
 
     plan = forms.ChoiceField(choices=PLAN_CHOICES)

@@ -1,6 +1,6 @@
 {% extends "djstripe/base.html" %}
 
-{% block title %}Cancel Subscription{% endblock title %}
+{% block title %}Cancel Donation{% endblock title %}
 
 {% block content %}
 {{ block.super }}
@@ -9,21 +9,21 @@
         <div class="col-xs-12">
             <ul class="breadcrumb">
               <li><a href="{% url 'djstripe:account' %}">Home</a></li>
-              <li class="active">Cancel Subscription</li>
+              <li class="active">Cancel Donation</li>
             </ul>
         </div>
     </div>
 
     <div class="row">
         <div class="col-xs-12">
-            <h2>Cancel Subscription</h2>
+            <h2>Cancel Donation</h2>
             
     		{% if not customer.current_subscription %}
     			<p>You have no subscription on file.</p>
     			<p>See your <a href="{% url 'djstripe:account' %}">account status</a> or better yet, <a href="{% url 'djstripe:subscribe' %}">subscribe</a>.</p>
 
     		{% elif customer.current_subscription.canceled_at and customer.current_subscription.start < customer.current_subscription.canceled_at %}
-        		<p>Your subscription was already cancelled.</p>
+        		<p>Your donation was already cancelled.</p>
     			<p>See your <a href="{% url 'djstripe:account' %}">account status</a> or better yet, get a <a href="{% url 'djstripe:subscribe' %}">fresh subscription</a>.</p>
 
         	{% else %}        

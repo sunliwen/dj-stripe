@@ -16,8 +16,8 @@ from braces.views import LoginRequiredMixin
 from braces.views import SelectRelatedMixin
 import stripe
 
-from .forms import PlanForm, CancelSubscriptionForm
-from .mixins import PaymentsContextMixin, SubscriptionMixin
+from .forms import OneTimeForm, PlanForm, CancelSubscriptionForm
+from .mixins import PaymentsContextMixin, SubscriptionMixin, OneTimeMixin
 from .models import CurrentSubscription
 from .models import Customer
 from .models import Event
@@ -26,6 +26,9 @@ from .settings import PLAN_LIST
 from .settings import PY3
 from .settings import User
 from .sync import sync_customer
+
+
+import logging
 
 
 class ChangeCardView(LoginRequiredMixin, PaymentsContextMixin, DetailView):
@@ -208,6 +211,70 @@ class ChangePlanView(LoginRequiredMixin,
                 raise e
             return self.form_valid(form)
         else:
+            return self.form_invalid(form)
+
+
+######### Donate One Time View
+
+
+class DonateOneTimeView(
+        FormValidMessageMixin,
+        OneTimeMixin,
+        FormView):
+    # TODO - needs tests
+    """email and card information will be used to charge
+    """
+
+    form_class = OneTimeForm
+    template_name = "djstripe/onetime_form.html"
+    success_url = reverse_lazy("djstripe:thanks")
+    form_valid_message = "Thanks for your donation!"
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+
+        logging.debug("DonateOneTimeView.post")
+        logging.debug(form)
+        logging.debug(form.is_valid())
+        logging.debug(self.request.POST)
+
+        if form.is_valid():
+            logging.debug("DonateOneTimeView.post.is_valid")
+
+            # if the self.request.user, charge the constomer
+            # else charge the card
+
+            # if request.user.is_authenticated():
+            #     try:
+            #         customer, created = Customer.get_or_create(self.request.user)
+            #         customer.update_card(self.request.POST.get("stripe_token"))
+            #         customer.subscribe(int(form.cleaned_data["amount"]))
+            #     except stripe.StripeError as e:
+            #         # add form error here
+            #         self.error = e.args[0]
+            #         return self.form_invalid(form)
+            # else:
+            try:
+                logging.debug(form.cleaned_data)
+
+                stripe.Charge.create(
+                    amount=int(form.cleaned_data["amount"]) * 100,
+                    currency="usd",
+                    card=self.request.POST.get("stripe_token"),  # obtained with Stripe.js
+                    description="Charge for support@bluemarblespace.org"
+                )
+            except stripe.StripeError as e:
+                # add form error here
+                self.error = e.args[0]
+                return self.form_invalid(form)
+            return self.form_valid(form)
+        else:
+            logging.debug("DonateOneTimeView.post.is_invalid")
             return self.form_invalid(form)
 
 

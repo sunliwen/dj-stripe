@@ -45,3 +45,9 @@ class SubscriptionMixin(PaymentsContextMixin):
         context['customer'], created = Customer.get_or_create(self.request.user)
         context['CurrentSubscription'] = CurrentSubscription
         return context
+
+
+class OneTimeMixin(PaymentsContextMixin):
+    def get_context_data(self, *args, **kwargs):
+        context = super(OneTimeMixin, self).get_context_data(**kwargs)
+        return context
