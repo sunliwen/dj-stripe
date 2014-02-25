@@ -32,9 +32,9 @@ urlpatterns = patterns("",
         name="account"
     ),
     url(
-        r"^$",
-        TemplateView.as_view(template_name="thankyou.html"),
-        name="thank_you"
+        r"^thanks/$",
+        TemplateView.as_view(template_name="djstripe/thanks.html"),
+        name="thanks"
     ),
     url(
         r"^onetime/$",

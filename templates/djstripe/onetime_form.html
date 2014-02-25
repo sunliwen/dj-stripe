@@ -14,7 +14,7 @@
         <li><a href="{% url 'djstripe:account' %}">Home</a></li>
         <li class="active">Donate one time</li>
       </ul>
-      <h2>Choose a Subscription</h2>
+      <h2>Donate one time</h2>
 
       {% if error %}
           <div class="alert alert-error">{{ error }}</div>
@@ -36,8 +36,6 @@
         <span class="payment-errors"></span>
 
         <div class="form-group">
-
-          <h4>NEW DONATION</h4>
 
           <!-- Donation amount -->
             <h5>Donation amount</h5>
