@@ -246,23 +246,17 @@ class DonateOneTimeView(
         if form.is_valid():
             logging.debug("DonateOneTimeView.post.is_valid")
 
-            # if the self.request.user, charge the constomer
-            # else charge the card
-
-            # if request.user.is_authenticated():
-            #     try:
-            #         customer, created = Customer.get_or_create(self.request.user)
-            #         customer.update_card(self.request.POST.get("stripe_token"))
-            #         customer.subscribe(int(form.cleaned_data["amount"]))
-            #     except stripe.StripeError as e:
-            #         # add form error here
-            #         self.error = e.args[0]
-            #         return self.form_invalid(form)
-            # else:
             try:
                 logging.debug(form.cleaned_data)
 
                 stripe.Charge.create(
+                    metadata={
+                        'fullname': self.request.POST.get("fullname"),
+                        'email': self.request.POST.get("email"),
+                        'donationDesignations': self.request.POST.get("donationDesignations"),
+                        'additionalInfos': self.request.POST.get("additionalInfos"),
+                        'comment': self.request.POST.get("comment"),
+                    },
                     amount=int(form.cleaned_data["amount"]) * 100,
                     currency="usd",
                     card=self.request.POST.get("stripe_token"),  # obtained with Stripe.js

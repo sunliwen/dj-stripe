@@ -18,6 +18,7 @@ Call from url tag::
 from __future__ import unicode_literals
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
 
 from . import settings as app_settings
 from . import views
@@ -28,6 +29,10 @@ urlpatterns = patterns("",
     # HTML views
     url(
         r"^$",
+        RedirectView.as_view(url='onetime'),
+    ),
+    url(
+        r"^account/$",
         views.AccountView.as_view(),
         name="account"
     ),
