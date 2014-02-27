@@ -44,10 +44,17 @@
                 <option value="monthly_100">Give $100 per month</option>
                 <option value="monthly_custom">Custom(monthly)</option>
               </select>
-              <input id="id_amount" name="amount" type="text" class="form-control" placeholder="0" style="text-align: right; width: 100px">
-              <a class="btn btn-link js-amount" > 50 </a>
-              <a class="btn btn-link js-amount"> 100 </a>
-              <a class="btn btn-link js-amount"> 250 </a>
+              <div id="amount_group" class="form-group" style="display: none;padding-top: 5px">
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <input id="id_amount" name="amount" type="text" class="form-control pull-left" placeholder="0" style="text-align: right; width: 100px; ">
+                  <a class="btn btn-link js-amount pull-left" > 50 </a>
+                  <a class="btn btn-link js-amount"> 100 </a>
+                  <a class="btn btn-link js-amount"> 250 </a>
+                  <a class="btn btn-link js-amount"> 500 </a>
+                  <a class="btn btn-link js-amount"> 1000 </a>
+                </div>
+              </div>
             </div>
           
             <hr>
@@ -220,7 +227,13 @@
         $("#id_amount").val($(this).text());
     });
 
-    
+    $("#id_plan").on("change", function(){ 
+      if ($(this).val().indexOf('custom') != -1) {
+        $("#amount_group").show();
+      } else {
+        $("#amount_group").hide();
+      }
+    })
 
     $('#donate_monthly_form').submit(function(event) {
         var $form = $(this);

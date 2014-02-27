@@ -312,12 +312,13 @@ class DonateMonthlyView(
                 except Exception:
                     quantity = 1
 
+                logging.debug(self.request.POST.getlist("additionalInfos"))
                 stripe.Customer.create(
                     metadata={
                         'fullname': self.request.POST.get("fullname"),
                         'email': self.request.POST.get("email"),
                         'donationDesignations': self.request.POST.get("donationDesignations"),
-                        'additionalInfos': self.request.POST.get("additionalInfos"),
+                        'additionalInfos': ",".join(self.request.POST.getlist("additionalInfos")),
                         'comment': self.request.POST.get("comment"),
                     },
                     description="Customer for test@example.com",
