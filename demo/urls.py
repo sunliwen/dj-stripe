@@ -6,7 +6,6 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', RedirectView.as_view(url='/donate/')),
-    url(r'^donate/', include('djstripe.urls', namespace="djstripe")),
+    url(r'^', include('djstripe.urls', namespace="djstripe")),
     url(r'^admin/', include(admin.site.urls)),
 )
