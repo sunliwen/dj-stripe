@@ -29,7 +29,7 @@ urlpatterns = patterns("",
     # HTML views
     url(
         r"^$",
-        RedirectView.as_view(url='onetime'),
+        RedirectView.as_view(url='/support/onetime/'),
     ),
     url(
         r"^onetime/$",
