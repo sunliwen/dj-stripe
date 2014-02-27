@@ -16,7 +16,7 @@ from braces.views import LoginRequiredMixin
 from braces.views import SelectRelatedMixin
 import stripe
 
-from .forms import OneTimeForm, PlanForm, CancelSubscriptionForm
+from .forms import OneTimeForm, MonthlyForm, PlanForm, CancelSubscriptionForm
 from .mixins import PaymentsContextMixin, SubscriptionMixin, OneTimeMixin
 from .models import CurrentSubscription
 from .models import Customer
@@ -270,6 +270,72 @@ class DonateOneTimeView(
         else:
             logging.debug("DonateOneTimeView.post.is_invalid")
             return self.form_invalid(form)
+
+
+######### Donate Monthly View
+
+class DonateMonthlyView(
+        FormValidMessageMixin,
+        OneTimeMixin,
+        FormView):
+    # TODO - needs tests
+    """email and card information will be used to charge
+    """
+
+    form_class = MonthlyForm
+    template_name = "djstripe/monthly_form.html"
+    success_url = reverse_lazy("djstripe:thanks")
+    form_valid_message = "Thanks for your donation!"
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+
+        logging.debug("DonateMonthlyView.post")
+        logging.debug(form)
+        logging.debug(form.is_valid())
+        logging.debug(self.request.POST)
+
+        if form.is_valid():
+            logging.debug("DonateMonthlyView.post.is_valid")
+
+            try:
+                logging.debug(form.cleaned_data)
+
+                try:
+                    # HACKY
+                    quantity = int(self.request.POST.get("amount")) or 1
+                except Exception:
+                    quantity = 1
+
+                stripe.Customer.create(
+                    metadata={
+                        'fullname': self.request.POST.get("fullname"),
+                        'email': self.request.POST.get("email"),
+                        'donationDesignations': self.request.POST.get("donationDesignations"),
+                        'additionalInfos': self.request.POST.get("additionalInfos"),
+                        'comment': self.request.POST.get("comment"),
+                    },
+                    description="Customer for test@example.com",
+                    card=self.request.POST.get("stripe_token"),
+                    email=self.request.POST.get("email"),
+                    plan=self.request.POST.get("plan"),
+                    quantity=quantity,
+                )
+
+            except stripe.StripeError as e:
+                # add form error here
+                self.error = e.args[0]
+                return self.form_invalid(form)
+            return self.form_valid(form)
+        else:
+            logging.debug("DonateMonthlyView.post.is_invalid")
+            return self.form_invalid(form)
+
 
 
 ######### Web services

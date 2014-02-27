@@ -32,9 +32,14 @@ urlpatterns = patterns("",
         RedirectView.as_view(url='onetime'),
     ),
     url(
-        r"^account/$",
-        views.AccountView.as_view(),
-        name="account"
+        r"^onetime/$",
+        views.DonateOneTimeView.as_view(),
+        name="donate_onetime"
+    ),
+    url(
+        r"^monthly/$",
+        views.DonateMonthlyView.as_view(),
+        name="donate_monthly"
     ),
     url(
         r"^thanks/$",
@@ -42,10 +47,11 @@ urlpatterns = patterns("",
         name="thanks"
     ),
     url(
-        r"^onetime/$",
-        views.DonateOneTimeView.as_view(),
-        name="donate_onetime"
+        r"^account/$",
+        views.AccountView.as_view(),
+        name="account"
     ),
+
     url(
         r"^subscribe/$",
         views.SubscribeFormView.as_view(),
