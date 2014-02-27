@@ -33,6 +33,8 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 stripe.api_version = getattr(settings, "STRIPE_API_VERSION", "2012-11-07")
 
 
+import logging
+
 def convert_tstamp(response, field_name=None):
     try:
         if field_name and response[field_name]:
@@ -117,7 +119,8 @@ class Event(StripeObject):
             try:
                 self.customer = Customer.objects.get(stripe_id=cus_id)
                 self.save()
-            except Customer.DoesNotExist:
+            except Customer.DoesNotExist, e:
+                logging.debug(e)
                 pass
 
     def validate(self):

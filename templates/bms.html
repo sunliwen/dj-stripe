@@ -1,0 +1,32 @@
+{% load static %}
+
+<html>
+<header>
+<title>{% block title %}{% endblock %}</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
+
+<style>
+/*body{
+background-image: url(http://www.bluemarblespace.org/img/bg-01-opt.jpg);
+}*/
+</style>
+
+</header>
+<body>
+<!-- Content to display sub pages -->
+
+{% block content %}
+{% endblock %}
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+{% block javascript %}
+{% endblock %}
+
+</body>
+</html>

@@ -29,9 +29,7 @@ from .settings import PY3
 from .settings import User
 from .sync import sync_customer
 
-
 import logging
-
 
 class ChangeCardView(LoginRequiredMixin, PaymentsContextMixin, DetailView):
     # TODO - needs tests
@@ -93,7 +91,6 @@ class WebHook(CsrfExemptMixin, JsonRequestResponseMixin, View):
 
     def post(self, request, *args, **kwargs):
         data = self.request_json
-        logging.debug(data)
         if Event.objects.filter(stripe_id=data["id"]).exists():
             EventProcessingException.objects.create(
                 data=data,
@@ -237,20 +234,24 @@ class DonateOneTimeView(
         form = self.get_form(form_class)
 
         if form.is_valid():
-
             try:
-
-                stripe.Charge.create(
+                cus = stripe.Customer.create(
                     metadata={
                         'fullname': self.request.POST.get("fullname"),
                         'email': self.request.POST.get("email"),
                         'donationDesignations': self.request.POST.get("donationDesignations"),
-                        'additionalInfos': self.request.POST.get("additionalInfos"),
+                        'additionalInfos': ",".join(self.request.POST.getlist("additionalInfos")),
                         'comment': self.request.POST.get("comment"),
                     },
+                    description="Donator for Blue Marble Space",
+                    card=self.request.POST.get("stripe_token"),
+                    email=self.request.POST.get("email"),
+                )
+                logging.debug(cus)
+                stripe.Charge.create(
                     amount=int(form.cleaned_data["amount"]) * 100,
                     currency="usd",
-                    card=self.request.POST.get("stripe_token"),  # obtained with Stripe.js
+                    customer=cus['id'],  # obtained with Stripe.js
                     description="Charge for support@bluemarblespace.org"
                 )
             except stripe.StripeError as e:
@@ -314,7 +315,6 @@ class DonateMonthlyView(
                 return self.form_invalid(form)
             return self.form_valid(form)
         else:
-            logging.debug("DonateMonthlyView.post.is_invalid")
             return self.form_invalid(form)
 
 

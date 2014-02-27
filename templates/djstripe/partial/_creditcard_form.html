@@ -1,0 +1,28 @@
+<!-- Donation credit card-->
+
+<div class="form-group">
+  <label for="id_number">Credit Card Number</label>
+  <input id="id_number" class="form-control" type="text" size="20" pattern="\d*" autocomplete="off" data-stripe="number"/>
+</div>
+
+<div class="form-group">
+  <div class="pull-left" style="width:25%;padding-right:5px">
+    <label for="id_expmonth">Expiration</label>
+    <input id="id_expmonth" class="form-control" size="2" type="text" pattern="\d*" autocomplete="off" data-stripe="exp-month" placeholder="MM">
+  </div>
+  <div class="pull-left" style="width:25%;padding-right:5px">
+    <label for="id_expyear"> &nbsp;</label>
+    <input id="id_expyear" type="text" class="form-control" size="4" pattern="\d*" autocomplete="off" data-stripe="exp-year"  placeholder="YYYY"/>
+  </div>
+  <div class="pull-left" style="width:50%">
+    <label for="id_cvc">CVC</label>
+    <input id="id_cvc" type="text" class="form-control" size="4" pattern="\d*" data-stripe="cvc" />
+  </div>
+</div>
+
+<div class="form-group" style="padding-top: 70px">
+  <label for="id_name">Cardholder Name</label>
+  <input id="id_name" name="name" type="text" size="20" class="form-control" placeholder="Full name" data-stripe="name">
+</div>
+
+<!--/Donation credit card-->
