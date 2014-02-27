@@ -14,6 +14,8 @@ from braces.views import CsrfExemptMixin
 from braces.views import FormValidMessageMixin
 from braces.views import LoginRequiredMixin
 from braces.views import SelectRelatedMixin
+from braces.views import JsonRequestResponseMixin
+
 import stripe
 
 from .forms import OneTimeForm, MonthlyForm, PlanForm, CancelSubscriptionForm
@@ -86,16 +88,12 @@ class CancelSubscriptionView(LoginRequiredMixin, PaymentsContextMixin, FormView)
         return redirect("djstripe:account")
 
 
-class WebHook(CsrfExemptMixin, View):
+class WebHook(CsrfExemptMixin, JsonRequestResponseMixin, View):
+    require_json = True
 
     def post(self, request, *args, **kwargs):
-        if PY3:
-            # Handles Python 3 conversion of bytes to str
-            body = request.body.decode(encoding="UTF-8")
-        else:
-            # Handles Python 2
-            body = request.body
-        data = json.loads(body)
+        data = self.request_json
+        logging.debug(data)
         if Event.objects.filter(stripe_id=data["id"]).exists():
             EventProcessingException.objects.create(
                 data=data,
@@ -238,16 +236,9 @@ class DonateOneTimeView(
         form_class = self.get_form_class()
         form = self.get_form(form_class)
 
-        logging.debug("DonateOneTimeView.post")
-        logging.debug(form)
-        logging.debug(form.is_valid())
-        logging.debug(self.request.POST)
-
         if form.is_valid():
-            logging.debug("DonateOneTimeView.post.is_valid")
 
             try:
-                logging.debug(form.cleaned_data)
 
                 stripe.Charge.create(
                     metadata={
@@ -268,7 +259,6 @@ class DonateOneTimeView(
                 return self.form_invalid(form)
             return self.form_valid(form)
         else:
-            logging.debug("DonateOneTimeView.post.is_invalid")
             return self.form_invalid(form)
 
 
@@ -295,24 +285,14 @@ class DonateMonthlyView(
         form_class = self.get_form_class()
         form = self.get_form(form_class)
 
-        logging.debug("DonateMonthlyView.post")
-        logging.debug(form)
-        logging.debug(form.is_valid())
-        logging.debug(self.request.POST)
-
         if form.is_valid():
-            logging.debug("DonateMonthlyView.post.is_valid")
-
             try:
-                logging.debug(form.cleaned_data)
-
                 try:
                     # HACKY
                     quantity = int(self.request.POST.get("amount")) or 1
                 except Exception:
                     quantity = 1
 
-                logging.debug(self.request.POST.getlist("additionalInfos"))
                 stripe.Customer.create(
                     metadata={
                         'fullname': self.request.POST.get("fullname"),
@@ -321,7 +301,7 @@ class DonateMonthlyView(
                         'additionalInfos': ",".join(self.request.POST.getlist("additionalInfos")),
                         'comment': self.request.POST.get("comment"),
                     },
-                    description="Customer for test@example.com",
+                    description="Donator for Blue Marble Space",
                     card=self.request.POST.get("stripe_token"),
                     email=self.request.POST.get("email"),
                     plan=self.request.POST.get("plan"),
@@ -336,7 +316,6 @@ class DonateMonthlyView(
         else:
             logging.debug("DonateMonthlyView.post.is_invalid")
             return self.form_invalid(form)
-
 
 
 ######### Web services

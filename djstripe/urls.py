@@ -46,50 +46,51 @@ urlpatterns = patterns("",
         TemplateView.as_view(template_name="djstripe/thanks.html"),
         name="thanks"
     ),
-    url(
-        r"^account/$",
-        views.AccountView.as_view(),
-        name="account"
-    ),
+    # url(
+    #     r"^account/$",
+    #     views.AccountView.as_view(),
+    #     name="account"
+    # ),
 
-    url(
-        r"^subscribe/$",
-        views.SubscribeFormView.as_view(),
-        name="subscribe"
-    ),
-    url(
-        r"^change/plan/$",
-        views.ChangePlanView.as_view(),
-        name="change_plan"
-    ),
-    url(
-        r"^change/card/$",
-        views.ChangeCardView.as_view(),
-        name="change_card"
-    ),
-    url(
-        r"^cancel/subscription/$",
-        views.CancelSubscriptionView.as_view(),
-        name="cancel_subscription"
-    ),
-    url(
-        r"^history/$",
-        views.HistoryView.as_view(),
-        name="history"
-    ),
+    # url(
+    #     r"^subscribe/$",
+    #     views.SubscribeFormView.as_view(),
+    #     name="subscribe"
+    # ),
+    # url(
+    #     r"^change/plan/$",
+    #     views.ChangePlanView.as_view(),
+    #     name="change_plan"
+    # ),
+    # url(
+    #     r"^change/card/$",
+    #     views.ChangeCardView.as_view(),
+    #     name="change_card"
+    # ),
+    # url(
+    #     r"^cancel/subscription/$",
+    #     views.CancelSubscriptionView.as_view(),
+    #     name="cancel_subscription"
+    # ),
+    # url(
+    #     r"^history/$",
+    #     views.HistoryView.as_view(),
+    #     name="history"
+    # ),
 
 
     # Web services
-    url(
-        r"^a/sync/history/$",
-        views.SyncHistoryView.as_view(),
-        name="sync_history"
-    ),
-    url(
-        r"^a/check/available/(?P<attr_name>(username|email))/$",
-        views.CheckAvailableUserAttributeView.as_view(),
-        name="check_available_user_attr"
-    ),
+    # url(
+    #     r"^a/sync/history/$",
+    #     views.SyncHistoryView.as_view(),
+    #     name="sync_history"
+    # ),
+
+    # url(
+    #     r"^a/check/available/(?P<attr_name>(username|email))/$",
+    #     views.CheckAvailableUserAttributeView.as_view(),
+    #     name="check_available_user_attr"
+    # ),
 
     # Webhook
     url(
@@ -97,5 +98,4 @@ urlpatterns = patterns("",
         views.WebHook.as_view(),
         name="webhook"
     ),
-
 )
