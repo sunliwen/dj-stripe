@@ -29,7 +29,6 @@ from .settings import PY3
 from .settings import User
 from .sync import sync_customer
 
-import logging
 
 class ChangeCardView(LoginRequiredMixin, PaymentsContextMixin, DetailView):
     # TODO - needs tests
@@ -222,7 +221,7 @@ class DonateOneTimeView(
 
     form_class = OneTimeForm
     template_name = "djstripe/onetime_form.html"
-    success_url = "/support/thanks/" # reverse_lazy("djstripe:thanks")
+    success_url = "../thanks/" # reverse_lazy("djstripe:thanks")
     form_valid_message = "Thanks for your donation!"
 
     def post(self, request, *args, **kwargs):
@@ -232,23 +231,25 @@ class DonateOneTimeView(
         """
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-
+        metadata = {
+            'firstname': self.request.POST.get("firstname"),
+            'lastname': self.request.POST.get("lastname"),
+            'name': self.request.POST.get("name"),
+            'email': self.request.POST.get("email"),
+            'donationDesignations': self.request.POST.get("donationDesignations"),
+            'additionalInfos': ",".join(self.request.POST.getlist("additionalInfos")),
+            'comment': self.request.POST.get("comment"),
+        }
         if form.is_valid():
             try:
                 cus = stripe.Customer.create(
-                    metadata={
-                        'fullname': self.request.POST.get("fullname"),
-                        'email': self.request.POST.get("email"),
-                        'donationDesignations': self.request.POST.get("donationDesignations"),
-                        'additionalInfos': ",".join(self.request.POST.getlist("additionalInfos")),
-                        'comment': self.request.POST.get("comment"),
-                    },
+                    metadata=metadata,
                     description="Donator for Blue Marble Space",
                     card=self.request.POST.get("stripe_token"),
                     email=self.request.POST.get("email"),
                 )
-                logging.debug(cus)
                 stripe.Charge.create(
+                    metadata=metadata,
                     amount=int(form.cleaned_data["amount"]) * 100,
                     currency="usd",
                     customer=cus['id'],  # obtained with Stripe.js
@@ -275,7 +276,7 @@ class DonateMonthlyView(
 
     form_class = MonthlyForm
     template_name = "djstripe/monthly_form.html"
-    success_url = "/support/thanks/"  # reverse_lazy("djstripe:thanks")
+    success_url = "../thanks/"  # reverse_lazy("djstripe:thanks")
     form_valid_message = "Thanks for your donation!"
 
     def post(self, request, *args, **kwargs):

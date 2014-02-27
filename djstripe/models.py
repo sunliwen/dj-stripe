@@ -33,8 +33,6 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 stripe.api_version = getattr(settings, "STRIPE_API_VERSION", "2012-11-07")
 
 
-import logging
-
 def convert_tstamp(response, field_name=None):
     try:
         if field_name and response[field_name]:
