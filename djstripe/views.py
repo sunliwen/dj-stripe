@@ -242,19 +242,25 @@ class DonateOneTimeView(
         }
         if form.is_valid():
             try:
+                description = "Charge for one time donation for info@bmsis.com"
                 cus = stripe.Customer.create(
                     metadata=metadata,
                     description="Donator for Blue Marble Space",
                     card=self.request.POST.get("stripe_token"),
                     email=self.request.POST.get("email"),
                 )
-                stripe.Charge.create(
+                stripe.InvoiceItem.create(
                     metadata=metadata,
+                    customer=cus["id"],
                     amount=int(form.cleaned_data["amount"]) * 100,
                     currency="usd",
-                    customer=cus['id'],  # obtained with Stripe.js
-                    description="Charge for support@bluemarblespace.org"
+                    description=description
                 )
+                invoice = stripe.Invoice.create(
+                    customer=cus["id"],
+                    description=description
+                )
+                invoice.pay()
             except stripe.StripeError as e:
                 # add form error here
                 self.error = e.args[0]
@@ -294,7 +300,7 @@ class DonateMonthlyView(
                     quantity = int(self.request.POST.get("amount")) or 1
                 except Exception:
                     quantity = 1
-
+                description = "Charge for monthly donation for info@bmsis.com"
                 stripe.Customer.create(
                     metadata={
                         'fullname': self.request.POST.get("fullname"),
@@ -303,7 +309,7 @@ class DonateMonthlyView(
                         'additionalInfos': ",".join(self.request.POST.getlist("additionalInfos")),
                         'comment': self.request.POST.get("comment"),
                     },
-                    description="Donator for Blue Marble Space",
+                    description=description,
                     card=self.request.POST.get("stripe_token"),
                     email=self.request.POST.get("email"),
                     plan=self.request.POST.get("plan"),
