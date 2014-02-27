@@ -108,7 +108,7 @@ AUTHENTICATION_BACKENDS = (
 DJSTRIPE_PLANS = {
     "monthly_50": {
         "stripe_plan_id": "monthly_50",
-        "name": "Give $50 per month",
+        "name": "$50 donation per month",
         "description": "The monthly donation plan to bms",
         "price": 5000,
         "currency": "usd",
@@ -116,7 +116,7 @@ DJSTRIPE_PLANS = {
     },
     "monthly_100": {
         "stripe_plan_id": "monthly_100",
-        "name": "Give $100 per month",
+        "name": "$100 donation per month",
         "description": "The monthly donation plan to bms",
         "price": 10000,
         "currency": "usd",
@@ -124,7 +124,7 @@ DJSTRIPE_PLANS = {
     },
     "monthly_custom": {
         "stripe_plan_id": "monthly_custom",
-        "name": "Custom(monthly)",
+        "name": "Custom donation per month",
         "description": "The monthly donation plan to bms",
         "price": 100,
         "currency": "usd",
