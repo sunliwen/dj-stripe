@@ -87,8 +87,6 @@ STATIC_URL = '/static/'
 
 INSTALLED_APPS += (
     "djstripe",
-    "crispy_forms",
-    "floppyforms",
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

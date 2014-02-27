@@ -222,7 +222,7 @@ class DonateOneTimeView(
 
     form_class = OneTimeForm
     template_name = "djstripe/onetime_form.html"
-    success_url = reverse_lazy("djstripe:thanks")
+    success_url = "/donate/thanks/" # reverse_lazy("djstripe:thanks")
     form_valid_message = "Thanks for your donation!"
 
     def post(self, request, *args, **kwargs):
@@ -275,7 +275,7 @@ class DonateMonthlyView(
 
     form_class = MonthlyForm
     template_name = "djstripe/monthly_form.html"
-    success_url = reverse_lazy("djstripe:thanks")
+    success_url = "/donate/thanks/"  # reverse_lazy("djstripe:thanks")
     form_valid_message = "Thanks for your donation!"
 
     def post(self, request, *args, **kwargs):
