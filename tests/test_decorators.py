@@ -35,29 +35,6 @@ class TestSubscriptionPaymentRequired(TestCase):
         request.user = AnonymousUser()
         self.assertRaises(ImproperlyConfigured, a_view, request)
 
-    def test_user_unpaid(self):
-
-        # create customer object with no subscription
-
-        user = User.objects.create_user(username="pydanny")
-        Customer.objects.create(
-            user=user,
-            stripe_id="cus_xxxxxxxxxxxxxxx",
-            card_fingerprint="YYYYYYYY",
-            card_last_4="2342",
-            card_kind="Visa"
-        )
-
-        @subscription_payment_required
-        def a_view(request):
-            return HttpResponse()
-
-        request = self.factory.get('/account/')
-        request.user = user
-
-        response = a_view(request)
-        self.assertEqual(response.status_code, 302)
-
     def test_user_active_subscription(self):
         period_start = datetime.datetime(2013, 4, 1, tzinfo=timezone.utc)
         period_end = datetime.datetime(2030, 4, 30, tzinfo=timezone.utc)

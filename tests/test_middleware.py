@@ -87,11 +87,6 @@ class MiddlewareLogicTest(TestCase):
         response = self.middleware.process_request(request)
         self.assertEqual(response, None)
 
-    def test_customer_has_inactive_subscription(self):
-        request = Request(self.user, "/testapp_content/")
-        response = self.middleware.process_request(request)
-        self.assertEqual(response.status_code, 302)
-
     def test_customer_has_active_subscription(self):
         end_date = datetime.datetime(2100, 4, 30, tzinfo=timezone.utc)
         self.subscription.current_period_end = end_date
